@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const notes = require('../db/notes.json');
-const uuid = require('./helpers/uuid');
+const uuid = require('../helpers/uuid'); 
 
 const app = express();
 const PORT = 3001;
@@ -30,22 +30,21 @@ app.get('/api/notes', (req, res) => {
   return res.json(notes);
 });
 
-// // DO I NEED THIS???
-// // GET request for a single note
-// app.get('/api/notes/:note_id', (req, res) => {
-//   if (req.body && req.params.note_id) {
-//     console.info(`${req.method} request received to get a single a note`);
-//     const noteId = req.params.note_id;
-//     for (let i = 0; i < notes.length; i++) {
-//       const currentNote = notes[i];
-//       if (currentNote.note_id === noteId) {
-//         res.json(currentNote);
-//         return;
-//       }
-//     }
-//     res.json('Note ID not found');
-//   }
-// });
+// GET request for a single note
+app.get('/api/notes/:note_id', (req, res) => {
+  if (req.body && req.params.note_id) {
+    console.info(`${req.method} request received to get a single a note`);
+    const noteId = req.params.note_id;
+    for (let i = 0; i < notes.length; i++) {
+      const currentNote = notes[i];
+      if (currentNote.note_id === noteId) {
+        res.json(currentNote);
+        return;
+      }
+    }
+    res.json('Note ID not found');
+  }
+});
 
 // POST request to add a note
 app.post('/api/notes', (req, res) => {
@@ -65,7 +64,7 @@ app.post('/api/notes', (req, res) => {
     };
 
     // Obtain existing notes
-    fs.readFile('./db/notes.json', 'utf8', (err, data) => {
+    fs.readFile('../db/notes.json', 'utf8', (err, data) => {
       if (err) {
         console.error(err);
       } else {
@@ -77,7 +76,7 @@ app.post('/api/notes', (req, res) => {
 
         // Write updated notes back to the file
         fs.writeFile(
-          './db/notes.json',
+          '../db/notes.json',
           JSON.stringify(parsedNotes, null, 4),
           (writeErr) =>
             writeErr
